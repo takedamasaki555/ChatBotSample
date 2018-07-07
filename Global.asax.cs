@@ -7,7 +7,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
 
-namespace MeetingRoomAssistant
+namespace ChatBot
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

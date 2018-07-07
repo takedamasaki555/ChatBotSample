@@ -13,7 +13,7 @@ using System.Threading;
 using GraphAPILibraries;
 using Newtonsoft.Json;
 
-namespace Bot.MeetingRoomAssistant.Dialogs
+namespace ChatBot.Dialogs
 {
     [Serializable]
     public class RootDialog : IDialog<object>

@@ -1,1 +1,1 @@
-<%@ Application CodeBehind="Global.asax.cs" Inherits="MeetingRoomAssistant.WebApiApplication" Language="C#" %>
+<%@ Application CodeBehind="Global.asax.cs" Inherits="ChatBot.WebApiApplication" Language="C#" %>

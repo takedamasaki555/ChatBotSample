@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Web.Http;
 
-namespace MeetingRoomAssistant
+namespace ChatBot
 {
     public static class WebApiConfig
     {

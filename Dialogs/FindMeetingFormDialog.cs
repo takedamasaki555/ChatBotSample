@@ -7,7 +7,7 @@ using Microsoft.Bot.Builder.FormFlow.Advanced;
 using GraphAPILibraries;
 using Newtonsoft.Json;
 
-namespace Bot.MeetingRoomAssistant.Dialogs
+namespace ChatBot.Dialogs
 {
     [Serializable]
     public class FindMeetingTimesDialog : IDialog<object>

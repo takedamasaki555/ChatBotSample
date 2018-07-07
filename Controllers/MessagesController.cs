@@ -4,9 +4,8 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Web.Http.Description;
 using System.Net.Http;
-using Bot.MeetingRoomAssistant.Dialogs;
 
-namespace Bot.MeetingRoomAssistant
+namespace ChatBot
 {
     [BotAuthentication]
     public class MessagesController : ApiController
@@ -22,7 +21,7 @@ namespace Bot.MeetingRoomAssistant
             // check if activity is of type message
             if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new RootDialog());
+                await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
             }
             else
             {
