@@ -33,7 +33,7 @@ namespace ChatBot.Dialogs
         {
             var message = await item;
 
-            await context.PostAsync("会議アシスタント Bot をご利用する場合は、以下のリンクからログインしてください（別ウィンドウが表示されます）");
+            await context.PostAsync("Bot をご利用の場合は、以下のリンクからログインしてください（別ウィンドウが表示されます）");
 
             AuthenticationOptions options = new AuthenticationOptions()
             {
