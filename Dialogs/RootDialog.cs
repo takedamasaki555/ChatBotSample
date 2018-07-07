@@ -20,6 +20,7 @@ namespace ChatBot.Dialogs
     {
         public static AccessToken AccessToken = new AccessToken();
         public static List<string> CreateEventsList = new List<string>();
+        public static List<string> MenuList = new List<string>() { "ミーティングリクエストを送る", "質問する", "終了する" };
 
         // Step 1: Welcome Message
         public async Task StartAsync(IDialogContext context)
@@ -73,9 +74,9 @@ namespace ChatBot.Dialogs
         // Step 4: Main Menu
         private async Task ShowMenu(IDialogContext context)
         {
-            
-                //Show menues
-                PromptDialog.Choice(context, this.CallMenuDialog, new List<string>() { "ミーティングリクエストを送る", "終了する" }, $"{AccessToken.DisplayName}さん、おつかれさまです。どのようなご用件でしょうか？");
+
+            //Show menues
+            PromptDialog.Choice(context, this.CallMenuDialog, MenuList, $"{AccessToken.DisplayName}さん、おつかれさまです。どのようなご用件でしょうか？");
             /*
             else
             {
@@ -93,6 +94,9 @@ namespace ChatBot.Dialogs
             {
                 case "ミーティングリクエストを送る":
                     context.Call(new FindMeetingTimesDialog(), ResumeAfterDialog);
+                    break;
+                case "質問する":
+                    context.Call(new FAQDialog(), ResumeAfterFAQDialog);
                     break;
                 case "終了する":
                     await context.PostAsync("ご利用ありがとうございました。\n\n 再び Bot をご利用になる場合は何か文章を入力してください。");
@@ -145,13 +149,19 @@ namespace ChatBot.Dialogs
 
             await context.PostAsync("予約しています...");
             string response_json = await Events.GetResultAsync(CreateEventsList[Int32.Parse(message.Text)], AccessToken.Token);
-            if(response_json != "failture")
+            if (response_json != "failture")
             {
                 await context.PostAsync("ミーティングリクエストを関係者に送付しました。\n\n結果は Outlook でご確認ください。");
-            } else
+            }
+            else
             {
                 await context.PostAsync("ミーティングリクエスト送付に失敗しました。");
             }
+            await ShowMenu(context);
+        }
+
+        private async Task ResumeAfterFAQDialog(IDialogContext context, IAwaitable<object> result)
+        {
             await ShowMenu(context);
         }
     }
