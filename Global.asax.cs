@@ -1,6 +1,5 @@
 using Autofac;
 using System.Web.Http;
-using System.Configuration;
 using System.Reflection;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
@@ -33,6 +32,8 @@ namespace ChatBot
                         .Keyed<IBotDataStore<BotData>>(AzureModule.Key_DataStore)
                         .AsSelf()
                         .SingleInstance();
+
+                    builder.RegisterType<Microsoft.Bot.Builder.History.TraceActivityLogger>().AsImplementedInterfaces().InstancePerDependency();
 
                 });
             GlobalConfiguration.Configure(WebApiConfig.Register);
