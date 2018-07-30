@@ -218,6 +218,7 @@
     <Compile Include="Models\FindMeetingTimes\FindMeetingTimes.JSON.Request.cs" />
     <Compile Include="Models\FindMeetingTimes\FindMeetingTimes.cs" />
     <Compile Include="Models\AccessToken.cs" />
+    <Compile Include="Models\QnAMaker\CustomQnAMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

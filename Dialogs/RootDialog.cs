@@ -20,7 +20,7 @@ namespace ChatBot.Dialogs
     {
         public static AccessToken AccessToken = new AccessToken();
         public static List<string> CreateEventsList = new List<string>();
-        public static List<string> MenuList = new List<string>() { "ミーティングリクエストを送る", "質問する", "終了する" };
+        public static List<string> MenuList = new List<string>() { "1. ミーティングリクエストを送る", "2. 質問する", "3. 終了する" };
 
         // Step 1: Welcome Message
         public async Task StartAsync(IDialogContext context)
@@ -33,20 +33,32 @@ namespace ChatBot.Dialogs
         {
             var message = await item;
 
-            await context.PostAsync("Bot をご利用の場合は、以下のリンクからログインしてください（別ウィンドウが表示されます）");
-
-            AuthenticationOptions options = new AuthenticationOptions()
+            // Skype for Business の場合は認証をスキップ
+            if (message.ChannelId == "skypeforbusiness")
             {
-                Authority = ConfigurationManager.AppSettings["aad:Authority"],
-                ClientId = ConfigurationManager.AppSettings["aad:ClientId"],
-                ClientSecret = ConfigurationManager.AppSettings["aad:ClientSecret"],
-                ResourceId = "https://graph.microsoft.com",
-                RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"],
-                UseMagicNumber = false,
-                MagicNumberView = "LoginSuccess.html"
-            };
+                string menuMessage = "おつかれさまです。どのようなご用件でしょうか？番号を入力してください\n";
+                menuMessage = menuMessage + "1. 質問する\n2. 終了する\n";
+                await context.PostAsync(menuMessage);
+                context.Wait(CallSfBMenuDialog);
+            }
+            else
+            {
+                await context.PostAsync("Bot をご利用の場合は、以下のリンクからログインしてください（別ウィンドウが表示されます）");
 
-            await context.Forward(new AuthDialog(new ADALAuthProvider(), options), this.ResumeAfterAuthDialog, message, CancellationToken.None);
+                AuthenticationOptions options = new AuthenticationOptions()
+                {
+                    Authority = ConfigurationManager.AppSettings["aad:Authority"],
+                    ClientId = ConfigurationManager.AppSettings["aad:ClientId"],
+                    ClientSecret = ConfigurationManager.AppSettings["aad:ClientSecret"],
+                    ResourceId = "https://graph.microsoft.com",
+                    RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"],
+                    UseMagicNumber = false,
+                    MagicNumberView = "LoginSuccess.html"
+                };
+
+                await context.Forward(new AuthDialog(new ADALAuthProvider(), options), this.ResumeAfterAuthDialog, message, CancellationToken.None);
+
+            }
         }
 
         // Step 3: Authentication Result
@@ -77,12 +89,22 @@ namespace ChatBot.Dialogs
 
             //Show menues
             PromptDialog.Choice(context, this.CallMenuDialog, MenuList, $"{AccessToken.DisplayName}さん、おつかれさまです。どのようなご用件でしょうか？");
-            /*
-            else
+        }
+
+        private async Task CallSfBMenuDialog(IDialogContext context, IAwaitable<IMessageActivity> result)
+        {
+            //This method is resume after user choise menu
+            var selectedMenu = await result;
+
+            if (selectedMenu.Text == "1")
             {
-                await context.PostAsync("認証をしてください。");
-                context.Wait(MessageReceivedAsync);
-            }*/
+                context.Call(new FAQDialog(), ResumeAfterFAQDialog);
+            }
+            else if (selectedMenu.Text == "2")
+            {
+                await context.PostAsync("ご利用ありがとうございました。\n\n 再び Bot をご利用になる場合は何か文章を入力してください。");
+                context.Done<object>(null);
+            }
         }
 
         // Step 5: Check clicked item
@@ -90,20 +112,18 @@ namespace ChatBot.Dialogs
         {
             //This method is resume after user choise menu
             var selectedMenu = await result;
-            switch (selectedMenu)
+
+            if (selectedMenu == MenuList[0] || selectedMenu == "1") {
+                context.Call(new FindMeetingTimesDialog(), ResumeAfterDialog);
+            } else if(selectedMenu == MenuList[1] || selectedMenu == "2") {
+                context.Call(new FAQDialog(), ResumeAfterFAQDialog);
+            } else if(selectedMenu == MenuList[2] || selectedMenu == "3")
             {
-                case "ミーティングリクエストを送る":
-                    context.Call(new FindMeetingTimesDialog(), ResumeAfterDialog);
-                    break;
-                case "質問する":
-                    context.Call(new FAQDialog(), ResumeAfterFAQDialog);
-                    break;
-                case "終了する":
-                    await context.PostAsync("ご利用ありがとうございました。\n\n 再び Bot をご利用になる場合は何か文章を入力してください。");
-                    context.Done<object>(null);
-                    break;
+                await context.PostAsync("ご利用ありがとうございました。\n\n 再び Bot をご利用になる場合は何か文章を入力してください。");
+                context.Done<object>(null);
             }
         }
+
         private async Task ResumeAfterDialog(IDialogContext context, IAwaitable<object> result)
         {
             List<string> listTitle = new List<string>();
