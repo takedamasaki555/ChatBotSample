@@ -97,7 +97,6 @@ namespace ChatBot.Dialogs
                 string startTime = searchQuery.MeetingDateTime + " " + "09:00:00";
                 string endTime = searchQuery.MeetingDateTime + " " + "20:00:00"; 
 
-
                 string[] splited_attendees = searchQuery.Attendees.Split(',');
                 List<string> attendees = new List<string>();
                 foreach (string attendee in splited_attendees)

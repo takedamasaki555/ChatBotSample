@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Threading;
 using GraphAPILibraries;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ChatBot.Dialogs
 {
@@ -20,6 +21,7 @@ namespace ChatBot.Dialogs
     {
         public static AccessToken AccessToken = new AccessToken();
         public static List<string> CreateEventsList = new List<string>();
+        public static string channelId = "";
         public static List<string> MenuList = new List<string>() { "1. ミーティングリクエストを送る", "2. 質問する", "3. 終了する" };
 
         // Step 1: Welcome Message
@@ -32,9 +34,9 @@ namespace ChatBot.Dialogs
         public virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
             var message = await item;
-
+            channelId = message.ChannelId;
             // Skype for Business の場合は認証をスキップ
-            if (message.ChannelId == "skypeforbusiness")
+            if (channelId == "skypeforbusiness")
             {
                 string menuMessage = "おつかれさまです。どのようなご用件でしょうか？番号を入力してください\n";
                 menuMessage = menuMessage + "1. 質問する\n2. 終了する\n";
@@ -126,6 +128,7 @@ namespace ChatBot.Dialogs
 
         private async Task ResumeAfterDialog(IDialogContext context, IAwaitable<object> result)
         {
+            var message = await result;
             List<string> listTitle = new List<string>();
 
             var resultMessage = context.MakeMessage();
@@ -143,10 +146,31 @@ namespace ChatBot.Dialogs
                     title = title + data.Attendees[j].EmailAddress.Address + "\n\n";
                 }
                 listTitle.Add(title);
-                HeroCard heroCard = new HeroCard()
+
+                if (channelId == "msteams")
                 {
-                    Title = title,
-                    Buttons = new List<CardAction>()
+                    HeroCard heroCard = new HeroCard()
+                    {
+                        Title = title,
+                        Buttons = new List<CardAction>()
+                        {
+                            new CardAction()
+                            {
+                                Title = "予約する",
+                                DisplayText = "予約する",
+                                Type = ActionTypes.MessageBack,
+                                Text = $"{i}"
+                            }
+                        }
+                    };
+                    resultMessage.Attachments.Add(heroCard.ToAttachment());
+                }
+                else
+                {
+                    HeroCard heroCard = new HeroCard()
+                    {
+                        Title = title,
+                        Buttons = new List<CardAction>()
                         {
                             new CardAction()
                             {
@@ -155,8 +179,9 @@ namespace ChatBot.Dialogs
                                 Value = $"{i}"
                             }
                         }
-                };
-                resultMessage.Attachments.Add(heroCard.ToAttachment());
+                    };
+                    resultMessage.Attachments.Add(heroCard.ToAttachment());
+                }
             }
 
             await context.PostAsync(resultMessage);
