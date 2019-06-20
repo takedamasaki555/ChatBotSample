@@ -22,7 +22,7 @@ namespace ChatBot.Dialogs
         public static AccessToken AccessToken = new AccessToken();
         public static List<string> CreateEventsList = new List<string>();
         public static string channelId = "";
-        public static List<string> MenuList = new List<string>() { "1. ƒ~[ƒeƒBƒ“ƒOƒŠƒNƒGƒXƒg‚ğ‘—‚é", "2. ¿–â‚·‚é", "3. I—¹‚·‚é" };
+        public static List<string> MenuList = new List<string>() { "1. ãƒŸãƒ¼ãƒ†ã‚£ãƒ³ã‚°ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’é€ã‚‹", "2. è³ªå•ã™ã‚‹", "3. çµ‚äº†ã™ã‚‹" };
 
         // Step 1: Welcome Message
         public async Task StartAsync(IDialogContext context)
@@ -35,17 +35,17 @@ namespace ChatBot.Dialogs
         {
             var message = await item;
             channelId = message.ChannelId;
-            // Skype for Business ‚Ìê‡‚Í”FØ‚ğƒXƒLƒbƒv
+            // Skype for Business ã®å ´åˆã¯èªè¨¼ã‚’ã‚¹ã‚­ãƒƒãƒ—
             if (channelId == "skypeforbusiness")
             {
-                string menuMessage = "‚¨‚Â‚©‚ê‚³‚Ü‚Å‚·B‚Ç‚Ì‚æ‚¤‚È‚²—pŒ‚Å‚µ‚å‚¤‚©H”Ô†‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢\n";
-                menuMessage = menuMessage + "1. ¿–â‚·‚é\n2. I—¹‚·‚é\n";
+                string menuMessage = "ãŠã¤ã‹ã‚Œã•ã¾ã§ã™ã€‚ã©ã®ã‚ˆã†ãªã”ç”¨ä»¶ã§ã—ã‚‡ã†ã‹ï¼Ÿç•ªå·ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„\n";
+                menuMessage = menuMessage + "1. è³ªå•ã™ã‚‹\n2. çµ‚äº†ã™ã‚‹\n";
                 await context.PostAsync(menuMessage);
                 context.Wait(CallSfBMenuDialog);
             }
             else
             {
-                await context.PostAsync("Bot ‚ğ‚²—˜—p‚Ìê‡‚ÍAˆÈ‰º‚ÌƒŠƒ“ƒN‚©‚çƒƒOƒCƒ“‚µ‚Ä‚­‚¾‚³‚¢i•ÊƒEƒBƒ“ƒhƒE‚ª•\¦‚³‚ê‚Ü‚·j");
+                await context.PostAsync("Bot ã‚’ã”åˆ©ç”¨ã®å ´åˆã¯ã€ä»¥ä¸‹ã®ãƒªãƒ³ã‚¯ã‹ã‚‰ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ãã ã•ã„ï¼ˆåˆ¥ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒè¡¨ç¤ºã•ã‚Œã¾ã™ï¼‰");
 
                 AuthenticationOptions options = new AuthenticationOptions()
                 {
@@ -72,7 +72,7 @@ namespace ChatBot.Dialogs
             var json = await new HttpClient().GetWithAuthAsync(result_auth.AccessToken, "https://graph.microsoft.com/v1.0/me");
             if (json == null)
             {
-                await context.PostAsync("”FØ‚É¸”s‚µ‚Ü‚µ‚½B");
+                await context.PostAsync("èªè¨¼ã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
             }
             else
             {
@@ -90,7 +90,7 @@ namespace ChatBot.Dialogs
         {
 
             //Show menues
-            PromptDialog.Choice(context, this.CallMenuDialog, MenuList, $"{AccessToken.DisplayName}‚³‚ñA‚¨‚Â‚©‚ê‚³‚Ü‚Å‚·B‚Ç‚Ì‚æ‚¤‚È‚²—pŒ‚Å‚µ‚å‚¤‚©H");
+            PromptDialog.Choice(context, this.CallMenuDialog, MenuList, $"{AccessToken.DisplayName}ã•ã‚“ã€ãŠã¤ã‹ã‚Œã•ã¾ã§ã™ã€‚ã©ã®ã‚ˆã†ãªã”ç”¨ä»¶ã§ã—ã‚‡ã†ã‹ï¼Ÿ");
         }
 
         private async Task CallSfBMenuDialog(IDialogContext context, IAwaitable<IMessageActivity> result)
@@ -104,7 +104,7 @@ namespace ChatBot.Dialogs
             }
             else if (selectedMenu.Text == "2")
             {
-                await context.PostAsync("‚²—˜—p‚ ‚è‚ª‚Æ‚¤‚²‚´‚¢‚Ü‚µ‚½B\n\n Ä‚Ñ Bot ‚ğ‚²—˜—p‚É‚È‚éê‡‚Í‰½‚©•¶Í‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B");
+                await context.PostAsync("ã”åˆ©ç”¨ã‚ã‚ŠãŒã¨ã†ã”ã–ã„ã¾ã—ãŸã€‚\n\n å†ã³ Bot ã‚’ã”åˆ©ç”¨ã«ãªã‚‹å ´åˆã¯ä½•ã‹æ–‡ç« ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚");
                 context.Done<object>(null);
             }
         }
@@ -121,7 +121,7 @@ namespace ChatBot.Dialogs
                 context.Call(new FAQDialog(), ResumeAfterFAQDialog);
             } else if(selectedMenu == MenuList[2] || selectedMenu == "3")
             {
-                await context.PostAsync("‚²—˜—p‚ ‚è‚ª‚Æ‚¤‚²‚´‚¢‚Ü‚µ‚½B\n\n Ä‚Ñ Bot ‚ğ‚²—˜—p‚É‚È‚éê‡‚Í‰½‚©•¶Í‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B");
+                await context.PostAsync("ã”åˆ©ç”¨ã‚ã‚ŠãŒã¨ã†ã”ã–ã„ã¾ã—ãŸã€‚\n\n å†ã³ Bot ã‚’ã”åˆ©ç”¨ã«ãªã‚‹å ´åˆã¯ä½•ã‹æ–‡ç« ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚");
                 context.Done<object>(null);
             }
         }
@@ -132,7 +132,7 @@ namespace ChatBot.Dialogs
             List<string> listTitle = new List<string>();
 
             var resultMessage = context.MakeMessage();
-            resultMessage.Text = $"‹ó‚«ŠÔ‚ª {CreateEventsList.Count} ŒŒ©‚Â‚©‚è‚Ü‚µ‚½B";
+            resultMessage.Text = $"ç©ºãæ™‚é–“ãŒ {CreateEventsList.Count} ä»¶è¦‹ã¤ã‹ã‚Šã¾ã—ãŸã€‚";
             resultMessage.AttachmentLayout = AttachmentLayoutTypes.Carousel;
             resultMessage.Attachments = new List<Attachment>();
             for (int i = 0; i < CreateEventsList.Count; i++)
@@ -156,8 +156,8 @@ namespace ChatBot.Dialogs
                         {
                             new CardAction()
                             {
-                                Title = "—\–ñ‚·‚é",
-                                DisplayText = "—\–ñ‚·‚é",
+                                Title = "äºˆç´„ã™ã‚‹",
+                                DisplayText = "äºˆç´„ã™ã‚‹",
                                 Type = ActionTypes.MessageBack,
                                 Text = $"{i}"
                             }
@@ -174,7 +174,7 @@ namespace ChatBot.Dialogs
                         {
                             new CardAction()
                             {
-                                Title = "—\–ñ‚·‚é",
+                                Title = "äºˆç´„ã™ã‚‹",
                                 Type = ActionTypes.PostBack,
                                 Value = $"{i}"
                             }
@@ -192,15 +192,15 @@ namespace ChatBot.Dialogs
         {
             var message = await item;
 
-            await context.PostAsync("—\–ñ‚µ‚Ä‚¢‚Ü‚·...");
+            await context.PostAsync("äºˆç´„ã—ã¦ã„ã¾ã™...");
             string response_json = await Events.GetResultAsync(CreateEventsList[Int32.Parse(message.Text)], AccessToken.Token);
             if (response_json != "failture")
             {
-                await context.PostAsync("ƒ~[ƒeƒBƒ“ƒOƒŠƒNƒGƒXƒg‚ğŠÖŒWÒ‚É‘—•t‚µ‚Ü‚µ‚½B\n\nŒ‹‰Ê‚Í Outlook ‚Å‚²Šm”F‚­‚¾‚³‚¢B");
+                await context.PostAsync("ãƒŸãƒ¼ãƒ†ã‚£ãƒ³ã‚°ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’é–¢ä¿‚è€…ã«é€ä»˜ã—ã¾ã—ãŸã€‚\n\nçµæœã¯ Outlook ã§ã”ç¢ºèªãã ã•ã„ã€‚");
             }
             else
             {
-                await context.PostAsync("ƒ~[ƒeƒBƒ“ƒOƒŠƒNƒGƒXƒg‘—•t‚É¸”s‚µ‚Ü‚µ‚½B");
+                await context.PostAsync("ãƒŸãƒ¼ãƒ†ã‚£ãƒ³ã‚°ãƒªã‚¯ã‚¨ã‚¹ãƒˆé€ä»˜ã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
             }
             await ShowMenu(context);
         }
